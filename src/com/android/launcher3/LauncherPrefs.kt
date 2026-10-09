@@ -473,6 +473,16 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
 
         @JvmField val QSB_OUTER_OPACITY = backedUpItem("pref_qsb_outer_opacity", 70)
 
+        @JvmField val QSB_HEIGHT = backedUpItem("pref_qsb_height", 63)
+
+        @JvmField val QSB_WIDTH = backedUpItem("pref_qsb_width", 100)
+
+        @JvmField val QSB_OFFSET_Y = backedUpItem("pref_qsb_offset_y", 0)
+
+        @JvmField val QSB_ALIGN = backedUpItem("pref_qsb_align", "center")
+
+        @JvmField val QSB_RADIUS = backedUpItem("pref_qsb_radius", 100)
+
         @JvmStatic
         fun isHotseatQsbEnabled(context: Context): Boolean {
             if (!Flags.enableQsbOnHotseat()) {

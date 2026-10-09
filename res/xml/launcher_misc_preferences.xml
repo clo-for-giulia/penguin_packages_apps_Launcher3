@@ -48,6 +48,69 @@
         settings:units="s"
         launcher:iconSpaceReserved="false" />
 
+    <PreferenceCategory
+        android:key="pref_qsb_category"
+        android:title="@string/qsb_category_title"
+        launcher:iconSpaceReserved="false">
+
+        <com.android.launcher3.settings.preferences.CustomSeekBarPreference
+            android:key="pref_qsb_height"
+            android:title="@string/qsb_height_title"
+            android:persistent="true"
+            android:max="72"
+            android:defaultValue="63"
+            settings:min="40"
+            settings:units="dp"
+            launcher:iconSpaceReserved="false" />
+
+        <com.android.launcher3.settings.preferences.CustomSeekBarPreference
+            android:key="pref_qsb_width"
+            android:title="@string/qsb_width_title"
+            android:persistent="true"
+            android:max="100"
+            android:defaultValue="100"
+            settings:min="50"
+            settings:units="%"
+            launcher:iconSpaceReserved="false" />
+
+        <com.android.launcher3.settings.preferences.CustomSeekBarPreference
+            android:key="pref_qsb_offset_y"
+            android:title="@string/qsb_offset_y_title"
+            android:summary="@string/qsb_offset_y_summary"
+            android:persistent="true"
+            android:max="48"
+            android:defaultValue="0"
+            settings:min="-48"
+            settings:units="dp"
+            launcher:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="pref_qsb_align"
+            android:title="@string/qsb_align_title"
+            android:summary="%s"
+            android:entries="@array/qsb_align_entries"
+            android:entryValues="@array/qsb_align_values"
+            android:defaultValue="center"
+            android:persistent="true"
+            launcher:iconSpaceReserved="false" />
+
+        <com.android.launcher3.settings.preferences.CustomSeekBarPreference
+            android:key="pref_qsb_radius"
+            android:title="@string/qsb_radius_title"
+            android:persistent="true"
+            android:max="100"
+            android:defaultValue="100"
+            settings:min="0"
+            settings:units="%"
+            launcher:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_qsb_reset"
+            android:title="@string/qsb_reset_title"
+            launcher:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
     <Preference
         android:key="pref_trust_apps"
         android:title="@string/trust_apps_manager_name" />

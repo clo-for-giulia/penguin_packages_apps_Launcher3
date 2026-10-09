@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.display.DisplayController;
 import com.android.launcher3.display.LauncherDisplayInfo;
@@ -68,6 +69,7 @@ public class SettingsMisc extends CollapsingToolbarBaseActivity
     public static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
 
     public static final String KEY_TRUST_APPS = "pref_trust_apps";
+    private static final String KEY_QSB_RESET = "pref_qsb_reset";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,6 +303,15 @@ public class SettingsMisc extends CollapsingToolbarBaseActivity
                 case SUGGESTIONS_KEY:
                     // Show if Device Personalization Services is present.
                     return isDPSEnabled(getContext());
+                case KEY_QSB_RESET:
+                    preference.setOnPreferenceClickListener(p -> {
+                        LauncherPrefs.get(getContext()).removeSync(LauncherPrefs.QSB_HEIGHT,
+                                LauncherPrefs.QSB_WIDTH, LauncherPrefs.QSB_OFFSET_Y,
+                                LauncherPrefs.QSB_ALIGN, LauncherPrefs.QSB_RADIUS);
+                        getActivity().recreate();
+                        return true;
+                    });
+                    return true;
             }
             return true;
         }

@@ -592,10 +592,47 @@ public class Hotseat extends CellLayout implements Insettable {
                                 R.dimen.home_search_pill_height), MeasureSpec.EXACTLY));
             } else {
                 mQsb.measure(
-                        makeMeasureSpec(dp.getHotseatQsbWidth(), MeasureSpec.EXACTLY),
-                        makeMeasureSpec(dp.getHotseatProfile().getQsbHeight(), MeasureSpec.EXACTLY));
+                        makeMeasureSpec(getCustomQsbWidth(dp), MeasureSpec.EXACTLY),
+                        makeMeasureSpec(getCustomQsbHeight(dp), MeasureSpec.EXACTLY));
             }
         }
+    }
+
+    private int getCustomQsbWidth(DeviceProfile dp) {
+        int width = LauncherPrefs.QSB_WIDTH.get(getContext());
+        return dp.getHotseatQsbWidth() * width / 100;
+    }
+
+    private int getCustomQsbHeight(DeviceProfile dp) {
+        int height = LauncherPrefs.QSB_HEIGHT.get(getContext());
+        if (height == LauncherPrefs.QSB_HEIGHT.getDefaultValue()) {
+            return dp.getHotseatProfile().getQsbHeight();
+        }
+        return (int) Utilities.dpToPx(height);
+    }
+
+    /**
+     * Places the qsb inside the slot the device profile reserved for it, honoring the user's
+     * alignment and vertical offset. The slot itself is untouched so the dock keeps its spacing.
+     */
+    private void layoutQsbInSlot(int slotLeft, int slotBottom, int slotWidth, int slotHeight) {
+        int width = mQsb.getMeasuredWidth();
+        int height = mQsb.getMeasuredHeight();
+        int left;
+        switch (LauncherPrefs.QSB_ALIGN.get(getContext())) {
+            case "left":
+                left = slotLeft;
+                break;
+            case "right":
+                left = slotLeft + slotWidth - width;
+                break;
+            default:
+                left = slotLeft + (slotWidth - width) / 2;
+                break;
+        }
+        int offset = (int) Utilities.dpToPx(LauncherPrefs.QSB_OFFSET_Y.get(getContext()));
+        int bottom = slotBottom - (slotHeight - height) / 2 - offset;
+        mQsb.layout(left, bottom - height, left + width, bottom);
     }
 
     @Override
@@ -638,9 +675,9 @@ public class Hotseat extends CellLayout implements Insettable {
             return;
         }
 
-        int qsbMeasuredWidth = mQsb.getMeasuredWidth();
-        int left;
         DeviceProfile dp = mActivity.getDeviceProfile();
+        int qsbMeasuredWidth = dp.getHotseatQsbWidth();
+        int left;
         if (dp.getHotseatProfile().isQsbInline()) {
             int qsbSpace = dp.getHotseatProfile().getBorderSpace();
             left = Utilities.isRtl(getResources()) ? r - getPaddingRight() + qsbSpace
@@ -648,8 +685,6 @@ public class Hotseat extends CellLayout implements Insettable {
         } else {
             left = (r - l - qsbMeasuredWidth) / 2;
         }
-        int right = left + qsbMeasuredWidth;
-
         int height = b - t;
         int qsbHeight = dp.getDeviceProperties().isLargeScreen()
                 ? mQsb.getMeasuredHeight() : dp.getHotseatProfile().getQsbHeight();
@@ -662,14 +697,14 @@ public class Hotseat extends CellLayout implements Insettable {
             int offsetY = (dp.getHotseatProfile().getBarSizePx() - qsbHeight)
                     + dp.getHotseatProfile().getQsbShadowHeight();
             int bottom = height - offsetY;
-            mQsb.layout(left, bottom - qsbHeight, right, bottom);
+            layoutQsbInSlot(left, bottom, qsbMeasuredWidth, qsbHeight);
             return;
         } else {
             bottomOffset = dp.getHotseatProfile().getBarBottomSpacePx();
             subtraction = dp.getHotseatProfile().getQsbShadowHeight();
         }
         int bottom = height - (bottomOffset - subtraction);
-        mQsb.layout(left, bottom - qsbHeight, right, bottom);
+        layoutQsbInSlot(left, bottom, qsbMeasuredWidth, qsbHeight);
     }
 
     /**

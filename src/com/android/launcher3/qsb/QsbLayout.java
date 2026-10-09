@@ -123,6 +123,15 @@ public class QsbLayout extends FrameLayout implements Reorderable, HorizontalIns
             updateIcons();
         } else if (LauncherPrefs.QSB_OUTER_OPACITY.getSharedPrefKey().equals(key)) {
             refreshOuterBackground();
+        } else if (LauncherPrefs.QSB_RADIUS.getSharedPrefKey().equals(key)) {
+            invalidate();
+        } else if (LauncherPrefs.QSB_HEIGHT.getSharedPrefKey().equals(key)
+                || LauncherPrefs.QSB_WIDTH.getSharedPrefKey().equals(key)
+                || LauncherPrefs.QSB_OFFSET_Y.getSharedPrefKey().equals(key)
+                || LauncherPrefs.QSB_ALIGN.getSharedPrefKey().equals(key)) {
+            if (getParent() instanceof View parent) {
+                parent.requestLayout();
+            }
         }
     }
 

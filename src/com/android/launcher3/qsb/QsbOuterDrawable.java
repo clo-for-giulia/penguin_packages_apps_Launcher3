@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
@@ -50,9 +51,9 @@ public class QsbOuterDrawable extends Drawable {
 
         mPaint.setColor(outerColorWithAlpha);
 
-        // Draw outer shape
-        float radius = mContext.getResources().getDimensionPixelSize(
-                R.dimen.qsb_widget_height);
+        // Draw outer shape, 100% is a full pill
+        float roundness = LauncherPrefs.QSB_RADIUS.get(mContext) / 100f;
+        float radius = bounds.height() / 2f * roundness;
         mRect.set(bounds);
         canvas.drawRoundRect(mRect, radius, radius, mPaint);
 
@@ -71,7 +72,8 @@ public class QsbOuterDrawable extends Drawable {
         mPaint.setColor(fillColor);
 
         RectF innerRect = new RectF(innerBounds);
-        canvas.drawRoundRect(innerRect, radius, radius, mPaint);
+        float innerRadius = innerBounds.height() / 2f * roundness;
+        canvas.drawRoundRect(innerRect, innerRadius, innerRadius, mPaint);
     }
 
     @Override
