@@ -111,6 +111,70 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="pref_search_pill_category"
+        android:title="@string/search_pill_category_title"
+        launcher:iconSpaceReserved="false">
+
+        <com.android.launcher3.settings.preferences.CustomSeekBarPreference
+            android:key="pref_search_pill_height"
+            android:title="@string/qsb_height_title"
+            android:persistent="true"
+            android:max="48"
+            android:defaultValue="30"
+            settings:min="24"
+            settings:units="dp"
+            launcher:iconSpaceReserved="false" />
+
+        <com.android.launcher3.settings.preferences.CustomSeekBarPreference
+            android:key="pref_search_pill_width"
+            android:title="@string/qsb_width_title"
+            android:persistent="true"
+            android:max="480"
+            android:defaultValue="0"
+            settings:min="0"
+            settings:units="dp"
+            settings:defaultValueText="@string/search_pill_width_auto"
+            launcher:iconSpaceReserved="false" />
+
+        <com.android.launcher3.settings.preferences.CustomSeekBarPreference
+            android:key="pref_search_pill_offset_y"
+            android:title="@string/qsb_offset_y_title"
+            android:summary="@string/search_pill_offset_y_summary"
+            android:persistent="true"
+            android:max="48"
+            android:defaultValue="0"
+            settings:min="-48"
+            settings:units="dp"
+            launcher:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="pref_search_pill_align"
+            android:title="@string/qsb_align_title"
+            android:summary="%s"
+            android:entries="@array/qsb_align_entries"
+            android:entryValues="@array/qsb_align_values"
+            android:defaultValue="center"
+            android:persistent="true"
+            launcher:iconSpaceReserved="false" />
+
+        <com.android.launcher3.settings.preferences.CustomSeekBarPreference
+            android:key="pref_search_pill_radius"
+            android:title="@string/qsb_radius_title"
+            android:persistent="true"
+            android:max="100"
+            android:defaultValue="100"
+            settings:min="0"
+            settings:units="%"
+            launcher:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="pref_search_pill_reset"
+            android:title="@string/search_pill_reset_title"
+            launcher:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
     <Preference
         android:key="pref_trust_apps"
         android:title="@string/trust_apps_manager_name" />

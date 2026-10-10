@@ -360,7 +360,7 @@
     <string name="drawer_list_summary">Choose between default list view or categorized folders (Caddy)</string>
     <string name="feed_default">Default</string>
     <string name="caddy_beta">Caddy (Beta)</string>
-    <string name="qsb_category_title">Search bar</string>
+    <string name="qsb_category_title">Google search bar</string>
     <string name="qsb_height_title">Height</string>
     <string name="qsb_width_title">Width</string>
     <string name="qsb_offset_y_title">Vertical position</string>
@@ -368,6 +368,10 @@
     <string name="qsb_align_title">Alignment</string>
     <string name="qsb_radius_title">Corner radius</string>
     <string name="qsb_reset_title">Reset search bar</string>
+    <string name="search_pill_category_title">Universal search pill</string>
+    <string name="search_pill_width_auto">Auto</string>
+    <string name="search_pill_offset_y_summary">Move the Search pill up or down</string>
+    <string name="search_pill_reset_title">Reset search pill</string>
     <string name="qsb_align_left">Left</string>
     <string name="qsb_align_center">Center</string>
     <string name="qsb_align_right">Right</string>

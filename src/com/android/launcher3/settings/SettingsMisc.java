@@ -70,6 +70,7 @@ public class SettingsMisc extends CollapsingToolbarBaseActivity
 
     public static final String KEY_TRUST_APPS = "pref_trust_apps";
     private static final String KEY_QSB_RESET = "pref_qsb_reset";
+    private static final String KEY_SEARCH_PILL_RESET = "pref_search_pill_reset";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -308,6 +309,16 @@ public class SettingsMisc extends CollapsingToolbarBaseActivity
                         LauncherPrefs.get(getContext()).removeSync(LauncherPrefs.QSB_HEIGHT,
                                 LauncherPrefs.QSB_WIDTH, LauncherPrefs.QSB_OFFSET_Y,
                                 LauncherPrefs.QSB_ALIGN, LauncherPrefs.QSB_RADIUS);
+                        getActivity().recreate();
+                        return true;
+                    });
+                    return true;
+                case KEY_SEARCH_PILL_RESET:
+                    preference.setOnPreferenceClickListener(p -> {
+                        LauncherPrefs.get(getContext()).removeSync(
+                                LauncherPrefs.SEARCH_PILL_HEIGHT, LauncherPrefs.SEARCH_PILL_WIDTH,
+                                LauncherPrefs.SEARCH_PILL_OFFSET_Y, LauncherPrefs.SEARCH_PILL_ALIGN,
+                                LauncherPrefs.SEARCH_PILL_RADIUS);
                         getActivity().recreate();
                         return true;
                     });

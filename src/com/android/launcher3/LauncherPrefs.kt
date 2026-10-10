@@ -483,6 +483,16 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
 
         @JvmField val QSB_RADIUS = backedUpItem("pref_qsb_radius", 100)
 
+        @JvmField val SEARCH_PILL_HEIGHT = backedUpItem("pref_search_pill_height", 30)
+
+        @JvmField val SEARCH_PILL_WIDTH = backedUpItem("pref_search_pill_width", 0)
+
+        @JvmField val SEARCH_PILL_OFFSET_Y = backedUpItem("pref_search_pill_offset_y", 0)
+
+        @JvmField val SEARCH_PILL_ALIGN = backedUpItem("pref_search_pill_align", "center")
+
+        @JvmField val SEARCH_PILL_RADIUS = backedUpItem("pref_search_pill_radius", 100)
+
         @JvmStatic
         fun isHotseatQsbEnabled(context: Context): Boolean {
             if (!Flags.enableQsbOnHotseat()) {

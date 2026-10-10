@@ -25,7 +25,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -188,6 +190,19 @@ public class Hotseat extends CellLayout implements Insettable {
         }
         super.dispatchDraw(canvas);
     }
+    private @Nullable Rect mLastInsets;
+
+    private final SharedPreferences.OnSharedPreferenceChangeListener mSearchPillPrefListener =
+            (prefs, key) -> {
+                if (key == null || !key.startsWith("pref_search_pill_")) return;
+                updateSearchPillBackground();
+                // Re-reserve the dock space for a new pill height
+                if (mLastInsets != null) {
+                    setInsets(mLastInsets);
+                } else {
+                    requestLayout();
+                }
+            };
 
     public Hotseat(Context context) {
         this(context, null);
@@ -232,6 +247,7 @@ public class Hotseat extends CellLayout implements Insettable {
             if (mActivity instanceof Launcher launcher) launcher.openSearchFromPill(v);
         });
         addView(mSearchPill);
+        updateSearchPillBackground();
 
         mIconsAlphaChannels = new MultiValueAlpha(getShortcutsAndWidgets(),
                 ALPHA_CHANNEL_CHANNELS_COUNT);
@@ -381,6 +397,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
     @Override
     public void setInsets(Rect insets) {
+        mLastInsets = new Rect(insets);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = mActivity.getDeviceProfile();
 
@@ -424,7 +441,7 @@ public class Hotseat extends CellLayout implements Insettable {
         boolean hasSearchPill = mSearchPill.getVisibility() == View.VISIBLE
                 || (dock && mQsb != null && mQsb.getVisibility() == View.VISIBLE);
         int pillSpace = !hasSearchPill ? 0
-                : getResources().getDimensionPixelSize(R.dimen.home_search_pill_height)
+                : getSearchPillHeight()
                         + 2 * getResources().getDimensionPixelSize(R.dimen.home_search_pill_gap);
         mDockBlurMargin = !dock ? 0
                 : getResources().getDimensionPixelSize(R.dimen.ipad_dock_blur_margin);
@@ -577,9 +594,14 @@ public class Hotseat extends CellLayout implements Insettable {
         }
 
         if (mSearchPill.getVisibility() != View.GONE) {
-            mSearchPill.measure(makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                    makeMeasureSpec(getResources().getDimensionPixelSize(
-                            R.dimen.home_search_pill_height), MeasureSpec.EXACTLY));
+            // A width of 0 is Auto, the pill wraps its text
+            int width = LauncherPrefs.SEARCH_PILL_WIDTH.get(getContext());
+            // Never wider than the dock content, so the top of the range is full width
+            int fullWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+            mSearchPill.measure(width == 0 ? makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+                            : makeMeasureSpec(Math.min((int) Utilities.dpToPx(width), fullWidth),
+                                    MeasureSpec.EXACTLY),
+                    makeMeasureSpec(getSearchPillHeight(), MeasureSpec.EXACTLY));
         }
 
         if (mQsb != null && mQsb.getVisibility() != View.GONE) {
@@ -596,6 +618,38 @@ public class Hotseat extends CellLayout implements Insettable {
                         makeMeasureSpec(getCustomQsbHeight(dp), MeasureSpec.EXACTLY));
             }
         }
+    }
+
+    private int getSearchPillHeight() {
+        return (int) Utilities.dpToPx(LauncherPrefs.SEARCH_PILL_HEIGHT.get(getContext()));
+    }
+
+    private void updateSearchPillBackground() {
+        // The stock glass is already a full pill, anything rounder needs no custom shape
+        if (LauncherPrefs.SEARCH_PILL_RADIUS.get(getContext()) == 100) {
+            mSearchPill.setBackground(mSearchPillGlass);
+            return;
+        }
+        // Same tint as bg_home_search_pill
+        float roundness = LauncherPrefs.SEARCH_PILL_RADIUS.get(getContext()) / 100f;
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(0x40FFFFFF);
+        background.setCornerRadius(getSearchPillHeight() / 2f * roundness);
+        mSearchPill.setBackground(background);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        LauncherPrefs.getPrefs(getContext())
+                .registerOnSharedPreferenceChangeListener(mSearchPillPrefListener);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        LauncherPrefs.getPrefs(getContext())
+                .unregisterOnSharedPreferenceChangeListener(mSearchPillPrefListener);
+        super.onDetachedFromWindow();
     }
 
     private int getCustomQsbWidth(DeviceProfile dp) {
@@ -657,10 +711,26 @@ public class Hotseat extends CellLayout implements Insettable {
         }
 
         if (mSearchPill.getVisibility() != View.GONE) {
+            // Just above the dock's icons, aligned within the dock's content width.
             int pillWidth = mSearchPill.getMeasuredWidth();
-            int pillLeft = (r - l - pillWidth) / 2;
+            int contentLeft = getPaddingLeft();
+            int contentWidth = r - l - getPaddingLeft() - getPaddingRight();
+            int pillLeft;
+            switch (LauncherPrefs.SEARCH_PILL_ALIGN.get(getContext())) {
+                case "left":
+                    pillLeft = contentLeft;
+                    break;
+                case "right":
+                    pillLeft = contentLeft + contentWidth - pillWidth;
+                    break;
+                default:
+                    pillLeft = (r - l - pillWidth) / 2;
+                    break;
+            }
+            int offset = (int) Utilities.dpToPx(
+                    LauncherPrefs.SEARCH_PILL_OFFSET_Y.get(getContext()));
             int pillBottom = getPaddingTop()
-                    - getResources().getDimensionPixelSize(R.dimen.home_search_pill_gap);
+                    - getResources().getDimensionPixelSize(R.dimen.home_search_pill_gap) - offset;
             mSearchPill.layout(pillLeft, pillBottom - mSearchPill.getMeasuredHeight(),
                     pillLeft + pillWidth, pillBottom);
         }
