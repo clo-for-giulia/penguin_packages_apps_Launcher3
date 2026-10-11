@@ -318,7 +318,7 @@ public class SettingsMisc extends CollapsingToolbarBaseActivity
                         LauncherPrefs.get(getContext()).removeSync(
                                 LauncherPrefs.SEARCH_PILL_HEIGHT, LauncherPrefs.SEARCH_PILL_WIDTH,
                                 LauncherPrefs.SEARCH_PILL_OFFSET_Y, LauncherPrefs.SEARCH_PILL_ALIGN,
-                                LauncherPrefs.SEARCH_PILL_RADIUS);
+                                LauncherPrefs.SEARCH_PILL_RADIUS, LauncherPrefs.SEARCH_PILL_SWAP);
                         getActivity().recreate();
                         return true;
                     });

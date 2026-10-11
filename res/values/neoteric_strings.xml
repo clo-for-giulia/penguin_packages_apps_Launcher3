@@ -372,6 +372,8 @@
     <string name="search_pill_width_auto">Auto</string>
     <string name="search_pill_offset_y_summary">Move the Search pill up or down</string>
     <string name="search_pill_reset_title">Reset search pill</string>
+    <string name="search_pill_swap_title">Swap with Google search bar</string>
+    <string name="search_pill_swap_summary">Put the Search pill where the Google search bar is and the Google search bar where the pill is</string>
     <string name="qsb_align_left">Left</string>
     <string name="qsb_align_center">Center</string>
     <string name="qsb_align_right">Right</string>

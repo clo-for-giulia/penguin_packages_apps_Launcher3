@@ -440,8 +440,12 @@ public class Hotseat extends CellLayout implements Insettable {
         }
         boolean hasSearchPill = mSearchPill.getVisibility() == View.VISIBLE
                 || (dock && mQsb != null && mQsb.getVisibility() == View.VISIBLE);
+        int upperHeight = getSearchPillHeight();
+        if (isSearchSwapped()) {
+            upperHeight = Math.max(upperHeight, getCustomQsbHeight(grid));
+        }
         int pillSpace = !hasSearchPill ? 0
-                : getSearchPillHeight()
+                : upperHeight
                         + 2 * getResources().getDimensionPixelSize(R.dimen.home_search_pill_gap);
         mDockBlurMargin = !dock ? 0
                 : getResources().getDimensionPixelSize(R.dimen.ipad_dock_blur_margin);
@@ -596,8 +600,8 @@ public class Hotseat extends CellLayout implements Insettable {
         if (mSearchPill.getVisibility() != View.GONE) {
             // A width of 0 is Auto, the pill wraps its text
             int width = LauncherPrefs.SEARCH_PILL_WIDTH.get(getContext());
-            // Never wider than the dock content, so the top of the range is full width
-            int fullWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+            // Never wider than the screen, so the top of the range is edge to edge
+            int fullWidth = getMeasuredWidth();
             mSearchPill.measure(width == 0 ? makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
                             : makeMeasureSpec(Math.min((int) Utilities.dpToPx(width), fullWidth),
                                     MeasureSpec.EXACTLY),
@@ -727,6 +731,8 @@ public class Hotseat extends CellLayout implements Insettable {
                     pillLeft = (r - l - pillWidth) / 2;
                     break;
             }
+            // A pill wider than the content can only start at the screen edge
+            pillLeft = Math.max(0, Math.min(pillLeft, r - l - pillWidth));
             int offset = (int) Utilities.dpToPx(
                     LauncherPrefs.SEARCH_PILL_OFFSET_Y.get(getContext()));
             int pillBottom = getPaddingTop()
@@ -775,6 +781,23 @@ public class Hotseat extends CellLayout implements Insettable {
         }
         int bottom = height - (bottomOffset - subtraction);
         layoutQsbInSlot(left, bottom, qsbMeasuredWidth, qsbHeight);
+        swapSearchBarsIfNeeded();
+    }
+
+    private boolean isSearchSwapped() {
+        return LauncherPrefs.SEARCH_PILL_SWAP.get(getContext());
+    }
+
+    /** Exchanges the vertical places of the Search pill and the Google search bar. */
+    private void swapSearchBarsIfNeeded() {
+        if (!isSearchSwapped() || mQsb == null || mQsb.getVisibility() == View.GONE
+                || mSearchPill.getVisibility() == View.GONE) {
+            return;
+        }
+        int pillCenter = (mSearchPill.getTop() + mSearchPill.getBottom()) / 2;
+        int qsbCenter = (mQsb.getTop() + mQsb.getBottom()) / 2;
+        mSearchPill.offsetTopAndBottom(qsbCenter - pillCenter);
+        mQsb.offsetTopAndBottom(pillCenter - qsbCenter);
     }
 
     /**

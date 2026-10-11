@@ -130,7 +130,7 @@
             android:key="pref_search_pill_width"
             android:title="@string/qsb_width_title"
             android:persistent="true"
-            android:max="480"
+            android:max="600"
             android:defaultValue="0"
             settings:min="0"
             settings:units="dp"
@@ -166,6 +166,14 @@
             android:defaultValue="100"
             settings:min="0"
             settings:units="%"
+            launcher:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:key="pref_search_pill_swap"
+            android:title="@string/search_pill_swap_title"
+            android:summary="@string/search_pill_swap_summary"
+            android:defaultValue="false"
+            android:persistent="true"
             launcher:iconSpaceReserved="false" />
 
         <Preference

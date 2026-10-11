@@ -492,6 +492,7 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val SEARCH_PILL_ALIGN = backedUpItem("pref_search_pill_align", "center")
 
         @JvmField val SEARCH_PILL_RADIUS = backedUpItem("pref_search_pill_radius", 100)
+        @JvmField val SEARCH_PILL_SWAP = backedUpItem("pref_search_pill_swap", false)
 
         @JvmStatic
         fun isHotseatQsbEnabled(context: Context): Boolean {
