@@ -165,6 +165,14 @@ data class HotseatProfile(
                     numShownHotseatIconsParam,
                 )
             }
+            // Phones keep the stock grid geometry; the dynamic dock is a large screen layout.
+            if (!deviceProperties.isLargeScreen) {
+                return recalculateGridHotseat(
+                    inv, hotseatProfileInitialValues, workspaceProfile, deviceProperties,
+                    panelCount, isScalableGrid, isVerticalBarLayout = false,
+                    numShownHotseatIconsParam,
+                )
+            }
             // The bottom dock has no fixed icon count: it shows as many pinned apps as the
             // screen width fits at the current icon size, leaving room for recent apps, up to
             // what the database holds.
