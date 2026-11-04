@@ -158,10 +158,10 @@ data class HotseatProfile(
                 return recalculateGridHotseat(
                     inv, hotseatProfileInitialValues, workspaceProfile, deviceProperties,
                     panelCount, isScalableGrid, isVerticalBarLayout = false,
-                    maxOf(
-                        numShownHotseatIconsParam,
-                        maxOf(inv.numShownHotseatIcons, minOf(inv.numColumns, 5)),
-                    ),
+                    when (inv.numColumns) {
+                        in 3..6 -> inv.numColumns
+                        else -> inv.numShownHotseatIcons
+                    },
                 )
             }
             // Hotseats sharing the row with inline navigation buttons or an inline
