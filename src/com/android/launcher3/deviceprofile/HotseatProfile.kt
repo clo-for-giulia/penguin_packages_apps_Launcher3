@@ -152,21 +152,24 @@ data class HotseatProfile(
                     panelCount, isScalableGrid, isVerticalBarLayout, numShownHotseatIconsParam,
                 )
             }
-            // Phones, and hotseats sharing the row with inline navigation buttons or an inline
-            // search bar, keep the stock count and calculation.
-            if (
-                !deviceProperties.isLargeScreen ||
-                    hotseatProfileInitialValues.areNavButtonsInline ||
-                    hotseatProfileInitialValues.isQsbInline
-            ) {
+            // Phones keep the workspace column count for the hotseat, so a 5x5 grid
+            // shows five icons instead of the dynamic dock count.
+            if (!deviceProperties.isLargeScreen) {
                 return recalculateGridHotseat(
                     inv, hotseatProfileInitialValues, workspaceProfile, deviceProperties,
                     panelCount, isScalableGrid, isVerticalBarLayout = false,
-                    numShownHotseatIconsParam,
+                    maxOf(
+                        numShownHotseatIconsParam,
+                        maxOf(inv.numShownHotseatIcons, minOf(inv.numColumns, 5)),
+                    ),
                 )
             }
-            // Phones keep the stock grid geometry; the dynamic dock is a large screen layout.
-            if (!deviceProperties.isLargeScreen) {
+            // Hotseats sharing the row with inline navigation buttons or an inline
+            // search bar keep the stock count and calculation.
+            if (
+                hotseatProfileInitialValues.areNavButtonsInline ||
+                    hotseatProfileInitialValues.isQsbInline
+            ) {
                 return recalculateGridHotseat(
                     inv, hotseatProfileInitialValues, workspaceProfile, deviceProperties,
                     panelCount, isScalableGrid, isVerticalBarLayout = false,
